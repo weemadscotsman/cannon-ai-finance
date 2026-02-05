@@ -1,0 +1,6 @@
+backend-template/
+node_modules/
+*.md
+dist/
+.env.local
+.git

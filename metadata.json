@@ -1,0 +1,9 @@
+{
+  "name": "CANN.ON.AI FORGE.FINANCES",
+  "description": "The ultimate mobile-first financial command center. Tracks 1000+ living costs, integrates Gemini Live for voice coaching, Veo for visualization, and Deep Thinking for long-term wealth planning.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}

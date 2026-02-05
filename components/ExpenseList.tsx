@@ -12,9 +12,6 @@ interface Props {
   onAdd: (e: Omit<Expense, 'id'>) => void;
   onEdit: (e: Expense) => void;
   onDelete: (id: string) => void;
-  userPlan?: 'free' | 'pro' | 'business';
-  maxExpenses?: number;
-  onUpgrade?: () => void;
 }
 
 const CATEGORY_ICONS: Record<string, string> = {
@@ -27,7 +24,7 @@ const CATEGORY_ICONS: Record<string, string> = {
 
 const FILTERS: ('all' | Frequency)[] = ['all', 'daily', 'weekly', 'monthly', 'yearly', 'one-time'];
 
-export const ExpenseList: React.FC<Props> = ({ expenses, currency, onAdd, onEdit, onDelete, userPlan = 'free', maxExpenses = 100, onUpgrade }) => {
+export const ExpenseList: React.FC<Props> = ({ expenses, currency, onAdd, onEdit, onDelete }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -408,18 +405,6 @@ export const ExpenseList: React.FC<Props> = ({ expenses, currency, onAdd, onEdit
                     </button>
                 </div>
             </div>
-        </div>
-      )}
-
-      {/* Free Tier Limit Warning */}
-      {userPlan === 'free' && expenses.length >= maxExpenses * 0.8 && (
-        <div className="shrink-0 mx-4 mb-2 p-3 bg-amber-950/30 border border-amber-500/30 rounded-xl">
-          <p className="text-xs text-amber-400 font-bold">
-            {expenses.length >= maxExpenses 
-              ? `Free limit reached (${maxExpenses}). ` 
-              : `Almost at free limit (${expenses.length}/${maxExpenses}). `}
-            <button onClick={onUpgrade} className="underline hover:text-amber-300">Upgrade to Pro</button>
-          </p>
         </div>
       )}
 

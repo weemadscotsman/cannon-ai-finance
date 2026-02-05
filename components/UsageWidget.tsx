@@ -54,7 +54,7 @@ export const UsageWidget: React.FC<Props> = ({ used, limit, onUpgrade }) => {
             onClick={onUpgrade}
             className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors"
           >
-            Upgrade →
+            Unlock $4.99 →
           </button>
         )}
       </div>

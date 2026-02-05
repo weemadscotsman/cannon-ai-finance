@@ -15,7 +15,7 @@ import { StorageRegistry } from './services/storageRegistry';
 import { calculateTotalMonthlyBurn } from './services/financeCore';
 
 // --- SUBSCRIPTION / MONETIZATION ---
-type UserPlan = 'free' | 'pro' | 'business';
+type UserPlan = 'free' | 'pro';
 
 interface UserState {
   plan: UserPlan;
@@ -25,12 +25,11 @@ interface UserState {
 }
 
 const PLAN_LIMITS: Record<UserPlan, number> = {
-  free: 50,
+  free: 20,  // 20 AI interactions trial
   pro: Infinity,
-  business: Infinity,
 };
 
-const MAX_FREE_EXPENSES = 100;
+
 
 function App() {
   // --- APP STATE ---
@@ -108,12 +107,6 @@ function App() {
   };
 
   const handleAddExpense = (newExpense: Omit<Expense, 'id'>) => {
-    // Free tier limit check
-    if (user.plan === 'free' && expenses.length >= MAX_FREE_EXPENSES) {
-      alert(`Free tier limited to ${MAX_FREE_EXPENSES} expenses. Upgrade to Pro for unlimited.`);
-      setAppView('pricing');
-      return;
-    }
     const expenseWithId = { ...newExpense, id: crypto.randomUUID() };
     setExpenses(prev => [expenseWithId, ...prev]);
   };
@@ -178,7 +171,12 @@ function App() {
     return (
       <Pricing 
         onBack={() => setAppView(user.isLoggedIn ? 'app' : 'landing')}
-        onSubscribe={handleSubscribe}
+        onSubscribe={(plan) => {
+          // In production, this opens Stripe for $4.99 one-time
+          alert('In production, this opens Stripe for $4.99 one-time payment.\n\nSimulating unlock...');
+          setUser({ ...user, plan: 'pro', aiLimit: Infinity, aiUsed: 0 });
+          setAppView('app');
+        }}
         currentPlan={user.plan}
       />
     );
@@ -242,9 +240,6 @@ function App() {
               onAdd={handleAddExpense} 
               onEdit={handleEditExpense} 
               onDelete={handleDeleteExpense}
-              userPlan={user.plan}
-              maxExpenses={MAX_FREE_EXPENSES}
-              onUpgrade={() => setAppView('pricing')}
             />
           )}
           {view === ViewState.PLANNER && (

@@ -49,7 +49,7 @@ export const LandingPage: React.FC<Props> = ({ onStart, onPricing, onPrivacy, on
               </button>
             </div>
             
-            <p className="text-sm text-gray-600">No credit card required. Free plan includes 50 AI interactions.</p>
+            <p className="text-sm text-gray-600">20 AI interactions free. Then $4.99 once. No subscription.</p>
           </div>
         </div>
       </div>
@@ -66,7 +66,7 @@ export const LandingPage: React.FC<Props> = ({ onStart, onPricing, onPrivacy, on
             <FeatureCard 
               icon="🧠"
               title="AI Strategy"
-              desc='Ask "How do I save $5k?" Get a personalized roadmap based on YOUR actual spending.'
+              desc='Ask "How do I save $5k?" Get a personalized roadmap based on YOUR actual spending. One-time $4.99 unlocks unlimited.'
             />
             <FeatureCard 
               icon="🎙️"

@@ -1,71 +1,47 @@
 
 import React, { useState } from 'react';
-import { createCheckoutSession } from '../services/stripe';
 
 interface Props {
   onBack: () => void;
-  onSubscribe: (plan: 'pro' | 'business') => void;
-  currentPlan?: 'free' | 'pro' | 'business';
+  onSubscribe: (plan: 'pro') => void;
+  currentPlan?: 'free' | 'pro';
 }
 
 export const Pricing: React.FC<Props> = ({ onBack, onSubscribe, currentPlan = 'free' }) => {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
-  const yearlyDiscount = 0.17; // 2 months free
-
   const plans = [
     {
       id: 'free' as const,
-      name: 'Starter',
+      name: 'Trial',
       price: 0,
-      description: 'Get started with basic tracking',
+      description: 'Try before you buy',
       features: [
-        'Up to 100 expenses',
-        '50 AI interactions/month',
-        'Basic receipt scanning',
-        'Email support',
+        '20 AI interactions',
+        'All features unlocked',
+        'No credit card required',
       ],
       cta: 'Current Plan',
       popular: false,
     },
     {
       id: 'pro' as const,
-      name: 'Pro',
-      price: billingCycle === 'monthly' ? 12 : 99,
-      period: billingCycle === 'monthly' ? '/month' : '/year',
-      description: 'For serious budgeters',
+      name: 'Lifetime',
+      price: 4.99,
+      period: ' one-time',
+      description: 'Pay once, own forever',
       features: [
-        'Unlimited expenses',
         'Unlimited AI interactions',
-        'Advanced receipt scanning',
-        'Live voice coach',
-        'Priority support',
-        'Export to CSV/PDF',
+        'All features forever',
+        'No subscription bs',
+        'Future updates included',
       ],
-      cta: currentPlan === 'free' ? 'Upgrade to Pro' : 'Current Plan',
+      cta: currentPlan === 'free' ? 'Unlock for $4.99' : 'Unlocked',
       popular: true,
-    },
-    {
-      id: 'business' as const,
-      name: 'Business',
-      price: billingCycle === 'monthly' ? 39 : 390,
-      period: billingCycle === 'monthly' ? '/month' : '/year',
-      description: 'For teams & power users',
-      features: [
-        'Everything in Pro',
-        'Up to 5 team members',
-        'Shared budgets',
-        'Admin dashboard',
-        'API access',
-        'White-label options',
-      ],
-      cta: currentPlan === 'business' ? 'Current Plan' : 'Contact Sales',
-      popular: false,
     },
   ];
 
   return (
     <div className="min-h-screen bg-black text-white p-6">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-12">
           <button 
@@ -79,41 +55,12 @@ export const Pricing: React.FC<Props> = ({ onBack, onSubscribe, currentPlan = 'f
         </div>
 
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-black mb-4">Simple Pricing</h2>
-          <p className="text-gray-400">Start free. Upgrade when you need more AI power.</p>
-          
-          {/* Billing Toggle */}
-          <div className="flex justify-center mt-8">
-            <div className="inline-flex bg-gray-900 rounded-xl p-1 border border-gray-800">
-              <button
-                onClick={() => setBillingCycle('monthly')}
-                className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${
-                  billingCycle === 'monthly' 
-                    ? 'bg-emerald-600 text-white' 
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                Monthly
-              </button>
-              <button
-                onClick={() => setBillingCycle('yearly')}
-                className={`px-6 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${
-                  billingCycle === 'yearly' 
-                    ? 'bg-emerald-600 text-white' 
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                Yearly
-                <span className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full">
-                  Save 17%
-                </span>
-              </button>
-            </div>
-          </div>
+          <h2 className="text-4xl md:text-5xl font-black mb-4">Simple</h2>
+          <p className="text-gray-400">No subscriptions. No bullshit. One price, yours forever.</p>
         </div>
 
         {/* Plans */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
           {plans.map((plan) => (
             <div
               key={plan.id}
@@ -131,10 +78,10 @@ export const Pricing: React.FC<Props> = ({ onBack, onSubscribe, currentPlan = 'f
                 </div>
               )}
               
-              {currentPlan === plan.id && (
+              {currentPlan === plan.id && plan.id === 'pro' && (
                 <div className="absolute -top-3 right-4">
                   <span className="bg-gray-700 text-white text-xs font-bold px-3 py-1 rounded-full">
-                    Active
+                    Unlocked
                   </span>
                 </div>
               )}
@@ -160,9 +107,9 @@ export const Pricing: React.FC<Props> = ({ onBack, onSubscribe, currentPlan = 'f
 
               <button
                 onClick={() => plan.id !== 'free' && onSubscribe(plan.id)}
-                disabled={currentPlan === plan.id || plan.id === 'free'}
+                disabled={currentPlan === 'pro' && plan.id === 'pro'}
                 className={`w-full py-3 rounded-xl font-bold transition-all ${
-                  currentPlan === plan.id || plan.id === 'free'
+                  currentPlan === 'pro' && plan.id === 'pro'
                     ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
                     : plan.popular
                     ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/50'
@@ -175,9 +122,10 @@ export const Pricing: React.FC<Props> = ({ onBack, onSubscribe, currentPlan = 'f
           ))}
         </div>
 
-        {/* FAQ / Trust */}
-        <div className="mt-16 text-center text-gray-500 text-sm">
-          <p>✓ Cancel anytime ✓ 30-day money back guarantee ✓ Secure payment</p>
+        {/* Trust */}
+        <div className="mt-12 text-center">
+          <p className="text-gray-500 text-sm mb-2">✓ 30-day money back guarantee ✓ Secure payment</p>
+          <p className="text-gray-600 text-xs">Built by a solo dev who hates subscriptions too</p>
         </div>
       </div>
     </div>
